@@ -12,6 +12,6 @@ router.get("/:id", propertiesController.show);
 router.post("/", propertiesController.store);
 
 //destroy
-// router.delete("/:id", propertiesController.destroy);
+router.delete("/:id", propertiesController.destroy);
 
 module.exports = router;

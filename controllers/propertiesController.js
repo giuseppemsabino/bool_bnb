@@ -71,4 +71,21 @@ function store(req, res){
 
 }
 
-module.exports = { index, show, store};
+function destroy (req, res){
+    const id = parseInt(req.params.id);
+
+    const sqlProperty = `
+    DELETE FROM properties
+    WHERE id = ?
+    `;
+    connection.query(sqlProperty, [id], (err)=>{
+    if (err) return res.status(500).json({ error: "Database Query Failed" });
+
+    })
+    res.json({
+        status: "OK",
+        message: "Property deleted",
+   });
+}
+
+module.exports = { index, show, store, destroy};
