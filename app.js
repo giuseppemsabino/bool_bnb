@@ -12,6 +12,7 @@ const corsOptions = {
 };
 
 //! MIDLEWARES
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/public", express.static("public"));
 
