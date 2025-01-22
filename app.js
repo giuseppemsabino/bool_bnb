@@ -1,16 +1,15 @@
 // *INIT EXPRESS
 const express = require("express");
 const app = express();
-const cors = require('cors')
+const cors = require("cors");
 
-
-const {HOST_DOMAIN, HOST_PORT} = process.env;
+const { HOST_DOMAIN, HOST_PORT, APP_FRONTEND_URL } = process.env;
 
 // !CORSE CONFIG
 const corsOptions = {
   origin: APP_FRONTEND_URL,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 //! MIDLEWARES
 app.use(express.json());
@@ -25,8 +24,7 @@ const errorsHandler = require("./middlewares/errorsHandler");
 const notFound = require("./middlewares/notFound");
 
 app.use(notFound);
-app.use(errorsHandler)
-
+app.use(errorsHandler);
 
 app.listen(HOST_PORT, () => {
   console.log(`Server listening at ${HOST_DOMAIN}:${HOST_PORT}`);
