@@ -4,15 +4,16 @@ const app = express();
 const cors = require('cors')
 
 
-const {HOST_DOMAIN, HOST_PORT} = process.env;
+const {HOST_DOMAIN, HOST_PORT, APP_FRONTEND_URL} = process.env;
 
 // !CORSE CONFIG
 const corsOptions = {
   origin: APP_FRONTEND_URL,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200 
 }
 
 //! MIDLEWARES
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use("/public", express.static("public"));
 
