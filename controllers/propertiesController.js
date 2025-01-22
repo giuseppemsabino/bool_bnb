@@ -50,4 +50,42 @@ function show(req, res) {
   });
 }
 
-module.exports = { index, show};
+function store(req, res){
+    const {title, n_rooms, n_beds, n_bathrooms, square_meters, address, type, email} = req.body;
+    
+   const sql =` INSERT INTO properties (title, n_rooms, n_beds, n_bathrooms, square_meters, address, type, email) 
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
+    connection.query(sql, [title, n_rooms, n_beds, n_bathrooms, square_meters, address, type, email], (err, results) => {
+         if(err){
+              console.log(err);
+              return res.status(500).json({
+                status: "KO",
+                message: "Database query failed"
+              });
+         }
+         res.json({
+              status: "OK",
+              message: "Property created",
+         });
+    }); 
+
+}
+
+function destroy (req, res){
+    const id = parseInt(req.params.id);
+
+    const sqlProperty = `
+    DELETE FROM properties
+    WHERE id = ?
+    `;
+    connection.query(sqlProperty, [id], (err)=>{
+    if (err) return res.status(500).json({ error: "Database Query Failed" });
+
+    })
+    res.json({
+        status: "OK",
+        message: "Property deleted",
+   });
+}
+
+module.exports = { index, show, store, destroy};
