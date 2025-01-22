@@ -1,8 +1,16 @@
 // *INIT EXPRESS
 const express = require("express");
 const app = express();
+const cors = require('cors')
+
 
 const {HOST_DOMAIN, HOST_PORT} = process.env;
+
+// !CORSE CONFIG
+const corsOptions = {
+  origin: APP_FRONTEND_URL,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
 //! MIDLEWARES
 app.use(express.json());
