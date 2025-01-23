@@ -145,12 +145,11 @@ function storeProperty(req, res) {
 
 function storeReview(req, res) {
   const propertyId = req.params.id;
-  
-  const { id,name, surname, content, start_date, stay_days } = req.body;
+  console.log(propertyId);
 
+  const { name, surname, content, start_date, stay_days } = req.body;
 
-  const sql = ` INSERT INTO reviews (
-  id,
+  const sql = `INSERT INTO reviews (
     name,
     surname,
     content,
@@ -158,19 +157,23 @@ function storeReview(req, res) {
     stay_days,
     property_id) 
   VALUES (?, ?, ?, ?, ?, ?);`;
-  connection.query(sql, [id, name, surname, content, start_date, stay_days, propertyId], (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
-        status: "KO",
-        message: "Database query failed",
+  connection.query(
+    sql,
+    [name, surname, content, start_date, stay_days, propertyId],
+    (err) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          status: "KO",
+          message: "Database query failed",
+        });
+      }
+      return res.status(200).json({
+        status: "OK",
+        message: "Review created",
       });
     }
-    return res.status(200).json({
-      status: "OK",
-      message: "Review created",
-    });
-  });
+  );
 }
 
 function destroy(req, res) {
