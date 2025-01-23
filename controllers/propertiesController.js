@@ -58,14 +58,8 @@ function show(req, res) {
           message: "Database query failed",
         });
       }
-      if (results.length === 0) {
-        return res.status(404).json({
-          status: "KO",
-          message: "Property not found",
-        });
-      }
+
       const reviews = results;
-      console.log(results);
 
       res.json({ property, reviews });
     });
@@ -176,7 +170,7 @@ function storeReview(req, res) {
   );
 }
 
-function destroy(req, res) {
+function destroyProperty(req, res) {
   const id = parseInt(req.params.id);
 
   const sqlProperty = `
@@ -185,11 +179,37 @@ function destroy(req, res) {
     `;
   connection.query(sqlProperty, [id], (err) => {
     if (err) return res.status(500).json({ error: "Database Query Failed" });
-  });
-  res.json({
-    status: "OK",
-    message: "Property deleted",
+
+    const sqlReview = `
+      DELETE FROM reviews
+      WHERE property_id = ?;
+    `;
+
+    connection.query(sqlReview, [id], (err) => {
+      if (err) return res.status(500).json({ error: "Database Query Failed" });
+    });
+    res.json({
+      status: "OK",
+      message: "Property deleted",
+    });
   });
 }
 
-module.exports = { index, show, storeProperty, storeReview, destroy };
+function destroyReview(req, res) {
+  const id = parseInt(req.params.id);
+
+  const sql = `
+    DELETE FROM reviews
+    WHERE id = ?
+    `;
+  connection.query(sql, [id], (err) => {
+    if (err) return res.status(500).json({ error: "Database Query Failed" });
+
+    res.json({
+      status: "OK",
+      message: "Review deleted",
+    });
+  });
+}
+
+module.exports = { index, show, storeProperty, storeReview, destroyProperty, destroyReview };

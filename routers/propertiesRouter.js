@@ -13,6 +13,7 @@ router.post("/", propertiesController.storeProperty);
 router.post("/:id", propertiesController.storeReview);
 
 //destroy
-router.delete("/:id", propertiesController.destroy);
+router.delete("/:id", propertiesController.destroyProperty);
+router.delete("/reviews/:id", propertiesController.destroyReview);
 
 module.exports = router;
