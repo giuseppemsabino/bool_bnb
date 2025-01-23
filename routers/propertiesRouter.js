@@ -9,7 +9,9 @@ router.get("/", propertiesController.index);
 router.get("/:id", propertiesController.show);
 
 //store
-router.post("/", propertiesController.store);
+router.post("/", propertiesController.storeProperty);
+router.post("/:id/reviews", propertiesController.storeReview);
+
 
 //destroy
 router.delete("/:id", propertiesController.destroy);
