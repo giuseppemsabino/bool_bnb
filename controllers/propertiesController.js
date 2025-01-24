@@ -49,7 +49,15 @@ function show(req, res) {
         message: "Property not found",
       });
     }
-    const [property] = results;
+
+    
+
+     const property = ({
+      ...results,
+      image: generateImage(results[0].image)
+    })
+    console.log(results);
+    
 
     const sqlReviews = `
         SELECT *
