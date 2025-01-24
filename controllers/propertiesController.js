@@ -53,7 +53,7 @@ function show(req, res) {
     
 
      const property = ({
-      ...results,
+      ...results[0],
       image: generateImage(results[0].image)
     })
     console.log(results);
