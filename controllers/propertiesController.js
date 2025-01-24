@@ -14,11 +14,16 @@ function index(req, res) {
       });
     }
 
+    const properties = results.map((property) => ({
+      ...property,
+      image: generateImage(property.image)
+    }))
+
     // console.log(results);
 
     res.json({
       message: "ok",
-      results,
+      properties,
     });
   });
 }
@@ -139,7 +144,6 @@ function storeProperty(req, res) {
 
 function storeReview(req, res) {
   const propertyId = req.params.id;
-  console.log(propertyId);
 
   const { name, surname, content, start_date, stay_days } = req.body;
 
@@ -211,5 +215,10 @@ function destroyReview(req, res) {
     });
   });
 }
+
+const generateImage = (coverName) => {
+  const {HOST_DOMAIN, HOST_PORT} = process.env;
+  return `${HOST_DOMAIN}:${HOST_PORT}/public/img/${coverName}`;
+};
 
 module.exports = { index, show, storeProperty, storeReview, destroyProperty, destroyReview };
