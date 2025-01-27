@@ -2,8 +2,11 @@ const connection = require("../db/conn");
 
 function index(req, res) {
   const sql = `
-      SELECT *
-      FROM properties`;
+      SELECT properties.*, types.name AS type_name, types.icon AS type_icon
+      FROM properties
+      INNER JOIN types
+      ON properties.type_id = types.id`;
+
   connection.query(sql, (err, results) => {
     if (err) {
       console.log(err);
@@ -16,10 +19,8 @@ function index(req, res) {
 
     const properties = results.map((property) => ({
       ...property,
-      image: generateImage(property.image)
-    }))
-
-    // console.log(results);
+      image: generateImage(property.image),
+    }));
 
     res.json({
       message: "ok",
@@ -50,14 +51,11 @@ function show(req, res) {
       });
     }
 
-    
-
-     const property = ({
+    const property = {
       ...results[0],
-      image: generateImage(results[0].image)
-    })
+      image: generateImage(results[0].image),
+    };
     console.log(results);
-    
 
     const sqlReviews = `
         SELECT *
@@ -225,8 +223,15 @@ function destroyReview(req, res) {
 }
 
 const generateImage = (coverName) => {
-  const {HOST_DOMAIN, HOST_PORT} = process.env;
+  const { HOST_DOMAIN, HOST_PORT } = process.env;
   return `${HOST_DOMAIN}:${HOST_PORT}/public/img/${coverName}`;
 };
 
-module.exports = { index, show, storeProperty, storeReview, destroyProperty, destroyReview };
+module.exports = {
+  index,
+  show,
+  storeProperty,
+  storeReview,
+  destroyProperty,
+  destroyReview,
+};
