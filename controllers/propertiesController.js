@@ -70,12 +70,12 @@ function show(req, res) {
         });
       }
 
-      const reviews = results;
-
-      // const reviews = {
-      //   ...results,
-      //   image: generateImage(results.user_image),
-      // };
+      const reviews = results.map((review) => {
+        return {
+          ...review,
+          user_img: generateImage(review.user_img),
+        };
+      });
 
       res.json({ property, reviews });
     });
