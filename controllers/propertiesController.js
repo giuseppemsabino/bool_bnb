@@ -33,9 +33,11 @@ function show(req, res) {
   const propertyId = req.params.id;
 
   const sqlProperty = `
-      SELECT *
+      SELECT properties.*, types.name AS type_name, types.icon AS type_icon
       FROM properties
-      WHERE id = ?`;
+      INNER JOIN types
+      ON properties.type_id=types.id
+      WHERE properties.id = ?`;
   connection.query(sqlProperty, [propertyId], (err, results) => {
     if (err) {
       console.log(err);
