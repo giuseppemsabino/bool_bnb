@@ -72,6 +72,11 @@ function show(req, res) {
 
       const reviews = results;
 
+      // const reviews = {
+      //   ...results,
+      //   image: generateImage(results.user_image),
+      // };
+
       res.json({ property, reviews });
     });
   });
