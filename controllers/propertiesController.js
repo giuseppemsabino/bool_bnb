@@ -93,24 +93,31 @@ function storeProperty(req, res) {
     n_bathrooms,
     square_meters,
     address,
-    type,
+    type_id,
     email,
+    host_name,
+    host_surname,
+    description,
   } = req.body;
 
   if (
     title.length > 3 &&
+    address.length > 3 &&
+    host_name.length > 3 &&
+    host_surname.length > 3 &&
+    description.length > 3 &&
+    email.length > 3 &&
     !isNaN(n_rooms) &&
     !isNaN(n_beds) &&
     !isNaN(n_bathrooms) &&
     !isNaN(square_meters) &&
-    address.length > 3 &&
-    type.length > 3 &&
     email.includes("@", ".") &&
-    email.length > 3 &&
     typeof title === "string" &&
     typeof address === "string" &&
     typeof email === "string" &&
-    typeof type === "string" &&
+    typeof host_name === "string" &&
+    typeof host_surname === "string" &&
+    typeof description === "string" &&
     n_rooms > 0 &&
     n_rooms % 1 === 0 &&
     n_beds > 0 &&
@@ -119,8 +126,8 @@ function storeProperty(req, res) {
     n_bathrooms % 1 === 0 &&
     square_meters > 0
   ) {
-    const sql = ` INSERT INTO properties (title, n_rooms, n_beds, n_bathrooms, square_meters, address, type, email) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+    const sql = ` INSERT INTO properties (title, n_rooms, n_beds, n_bathrooms, square_meters, address, type_id, email, host_name, host_surname, description) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?);`;
     connection.query(
       sql,
       [
@@ -130,8 +137,11 @@ function storeProperty(req, res) {
         n_bathrooms,
         square_meters,
         address,
-        type,
+        type_id,
         email,
+        host_name,
+        host_surname,
+        description,
       ],
       (err) => {
         if (err) {
