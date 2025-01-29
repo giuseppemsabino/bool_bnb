@@ -239,6 +239,27 @@ function destroyReview(req, res) {
   });
 }
 
+function indexTypes(req, res) {
+  const indexSql = `
+  SELECT *
+  FROM types`;
+
+  connection.query(indexSql, (err, results) => {
+    if (err) {
+      console.log(err);
+
+      return res.status(500).json({
+        status: "KO",
+        message: "Database query failed",
+      });
+    }
+    res.json({
+      message: "ok",
+      types: results,
+    });
+  });
+}
+
 const generateImage = (coverName) => {
   const { HOST_DOMAIN, HOST_PORT } = process.env;
   return `${HOST_DOMAIN}:${HOST_PORT}/public/img/${coverName}`;
@@ -251,4 +272,5 @@ module.exports = {
   storeReview,
   destroyProperty,
   destroyReview,
+  indexTypes,
 };
