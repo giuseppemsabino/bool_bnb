@@ -57,7 +57,6 @@ function show(req, res) {
       ...results[0],
       image: generateImage(results[0].image),
     };
-    console.log(results);
 
     const sqlReviews = `
         SELECT *
@@ -111,6 +110,12 @@ function storeProperty(req, res) {
     !isNaN(n_beds) &&
     !isNaN(n_bathrooms) &&
     !isNaN(square_meters) &&
+    isNaN(parseInt(title)) &&
+    isNaN(parseInt(address)) &&
+    isNaN(parseInt(email)) &&
+    isNaN(parseInt(host_name)) &&
+    isNaN(parseInt(host_surname)) &&
+    isNaN(parseInt(description)) &&
     email.includes("@", ".") &&
     typeof title === "string" &&
     typeof address === "string" &&
@@ -168,33 +173,57 @@ function storeProperty(req, res) {
 function storeReview(req, res) {
   const propertyId = req.params.id;
 
-  const { name, surname, content, start_date, stay_days } = req.body;
+  const { name, surname, content, rating, start_date, stay_days } = req.body;
 
-  const sql = `INSERT INTO reviews (
-    name,
-    surname,
-    content,
-    start_date,
-    stay_days,
-    property_id) 
-  VALUES (?, ?, ?, ?, ?, ?);`;
-  connection.query(
-    sql,
-    [name, surname, content, start_date, stay_days, propertyId],
-    (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          status: "KO",
-          message: "Database query failed",
+  if (
+    name.length >= 3 &&
+    surname.length >= 3 &&
+    content.length > 3 &&
+    !isNaN(rating) &&
+    !isNaN(stay_days) &&
+    isNaN(parseInt(name)) &&
+    isNaN(parseInt(surname)) &&
+    typeof name === "string" &&
+    typeof surname === "string" &&
+    typeof content === "string" &&
+    rating > 0 &&
+    rating < 6 &&
+    rating % 1 === 0 &&
+    stay_days > 0 &&
+    stay_days % 1 === 0
+  ) {
+    const sql = `INSERT INTO reviews (
+      name,
+      surname,
+      content,
+      start_date,
+      stay_days,
+      rating,
+      property_id) 
+      VALUES (?, ?, ?, ?, ?, ?, ?);`;
+    connection.query(
+      sql,
+      [name, surname, content, start_date, stay_days, rating, propertyId],
+      (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: "KO",
+            message: "Database query failed",
+          });
+        }
+        return res.status(200).json({
+          status: "OK",
+          message: "Review created",
         });
       }
-      return res.status(200).json({
-        status: "OK",
-        message: "Review created",
-      });
-    }
-  );
+    );
+  } else {
+    return res.status(400).json({
+      status: "KO",
+      message: "Invalid data",
+    });
+  }
 }
 
 function destroyProperty(req, res) {
