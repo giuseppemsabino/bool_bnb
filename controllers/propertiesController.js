@@ -30,7 +30,7 @@ function index(req, res) {
 
       const properties = results.map((property) => ({
         ...property,
-        image: images
+        images: images
           .map((image) => {
             if (image.property_id === property.id) {
               return { ...image, img_url: generateImage(image.img_url) };
@@ -73,16 +73,13 @@ function show(req, res) {
       });
     }
 
-    const property = {
-      ...results[0],
-      image: generateImage(results[0].image),
-    };
+    const sqlImage = `SELECT images.*
+                      FROM properties
+                      INNER JOIN images
+                      ON properties.id = images.property_id
+                      WHERE properties.id = ?`;
 
-    const sqlReviews = `
-        SELECT *
-        FROM reviews
-        WHERE property_id = ?`;
-    connection.query(sqlReviews, [propertyId], (err, results) => {
+    connection.query(sqlImage, [propertyId], (err, images) => {
       if (err) {
         console.log(err);
         return res.status(500).json({
@@ -91,14 +88,33 @@ function show(req, res) {
         });
       }
 
-      const reviews = results.map((review) => {
-        return {
-          ...review,
-          user_img: generateImage(review.user_img),
-        };
-      });
+      const property = {
+        ...results[0],
+        images,
+      };
 
-      res.json({ property, reviews });
+      const sqlReviews = `
+          SELECT *
+          FROM reviews
+          WHERE property_id = ?`;
+      connection.query(sqlReviews, [propertyId], (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: "KO",
+            message: "Database query failed",
+          });
+        }
+
+        const reviews = results.map((review) => {
+          return {
+            ...review,
+            user_img: generateImage(review.user_img),
+          };
+        });
+
+        res.json({ property, reviews });
+      });
     });
   });
 }
