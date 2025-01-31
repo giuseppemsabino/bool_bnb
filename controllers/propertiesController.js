@@ -17,14 +17,28 @@ function index(req, res) {
       });
     }
 
-    const properties = results.map((property) => ({
-      ...property,
-      image: generateImage(property.image),
-    }));
+    const sqlImages = `SELECT * FROM images;`;
+    connection.query(sqlImages, (err, images) => {
+      if (err) {
+        console.log(err);
 
-    res.json({
-      message: "ok",
-      properties,
+        return res.status(500).json({
+          status: "KO",
+          message: "Database query failed",
+        });
+      }
+
+      const properties = results.map((property) => ({
+        ...property,
+        image: images.filter((image) => {
+          return image.property_id === property.id;
+        }),
+      }));
+
+      res.json({
+        message: "ok",
+        properties,
+      });
     });
   });
 }
