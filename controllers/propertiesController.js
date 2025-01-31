@@ -30,9 +30,15 @@ function index(req, res) {
 
       const properties = results.map((property) => ({
         ...property,
-        image: images.filter((image) => {
-          return image.property_id === property.id;
-        }),
+        image: images
+          .map((image) => {
+            if (image.property_id === property.id) {
+              return { ...image, img_url: generateImage(image.img_url) };
+            }
+          })
+          .filter((image) => {
+            return image != null;
+          }),
       }));
 
       res.json({
