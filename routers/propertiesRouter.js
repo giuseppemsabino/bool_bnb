@@ -5,6 +5,7 @@ const propertiesController = require("../controllers/propertiesController");
 // index
 router.get("/", propertiesController.index);
 router.get("/types", propertiesController.indexTypes);
+router.get("/first-five", propertiesController.indexFirstFiveProperties);
 
 //show
 router.get("/:id", propertiesController.show);

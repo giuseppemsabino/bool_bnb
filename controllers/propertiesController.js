@@ -49,6 +49,56 @@ function index(req, res) {
   });
 }
 
+function indexFirstFiveProperties(req, res) {
+  const sql = `
+      SELECT properties.*, types.name AS type_name, types.icon AS type_icon
+      FROM properties
+      INNER JOIN types
+      ON properties.type_id = types.id
+      LIMIT 6`;
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+
+      return res.status(500).json({
+        status: "KO",
+        message: "Database query failed",
+      });
+    }
+
+    const sqlImages = `SELECT * FROM images;`;
+    connection.query(sqlImages, (err, images) => {
+      if (err) {
+        console.log(err);
+
+        return res.status(500).json({
+          status: "KO",
+          message: "Database query failed",
+        });
+      }
+
+      const properties = results.map((property) => ({
+        ...property,
+        images: images
+          .map((image) => {
+            if (image.property_id === property.id) {
+              return { ...image, img_url: generateImage(image.img_url) };
+            }
+          })
+          .filter((image) => {
+            return image != null;
+          }),
+      }));
+
+      res.json({
+        message: "ok",
+        properties,
+      });
+    });
+  });
+}
+
 function show(req, res) {
   const propertyId = req.params.id;
 
@@ -121,7 +171,6 @@ function show(req, res) {
   });
 }
 
-//* Create new Property and new Review
 function storeProperty(req, res) {
   const {
     title,
@@ -340,4 +389,5 @@ module.exports = {
   destroyProperty,
   destroyReview,
   indexTypes,
+  indexFirstFiveProperties,
 };
