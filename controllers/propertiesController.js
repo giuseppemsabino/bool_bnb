@@ -90,7 +90,9 @@ function show(req, res) {
 
       const property = {
         ...results[0],
-        images,
+        images: images.map((image) => {
+          return { ...image, img_url: generateImage(image.img_url) };
+        }),
       };
 
       const sqlReviews = `
