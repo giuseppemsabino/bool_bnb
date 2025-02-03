@@ -49,7 +49,7 @@ function index(req, res) {
   });
 }
 
-function indexFirstFiveProperties(req, res) {
+function indexFirstSixProperties(req, res) {
   const sql = `
       SELECT properties.*, types.name AS type_name, types.icon AS type_icon
       FROM properties
@@ -389,5 +389,5 @@ module.exports = {
   destroyProperty,
   destroyReview,
   indexTypes,
-  indexFirstFiveProperties,
+  indexFirstSixProperties,
 };
